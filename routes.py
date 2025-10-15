@@ -267,6 +267,11 @@ def recusar_certificado(certificado_id):
     if certificado:
         certificado.aprovado = False
         certificado.recusado = True
+        db.session.add(certificado)
+
+        # 🔹 Recalcula e atualiza pontos do usuário
+        calcular_pontos_total(certificado.usuario_id, persist=True)
+
         db.session.commit()
         flash('Certificado recusado com sucesso!')
     else:

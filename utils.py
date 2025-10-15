@@ -110,14 +110,16 @@ def calcular_pontos_total(usuario_id, certificados=None, persist=False):
                 certificado.horas_excedentes = dados['horas_excedentes']
                 db.session.add(certificado)
 
+        # 🔹 atualiza o total no usuário
+        total_pontos = sum(max(d['pontos'], 0) for d in progressoes.values())
+        usuario = db.session.get(Usuario, usuario_id)
+        if usuario:
+            usuario.pontuacao = total_pontos
+            db.session.add(usuario)
+
         db.session.commit()
 
     return progressoes
-
-
-
-
-
 
 
 def hash_password(password):
